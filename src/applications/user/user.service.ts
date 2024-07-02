@@ -5,8 +5,8 @@ import { UserRepository } from 'src/domains/repositories/user.repository';
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  async user(id: string) {
-    return this.repository.user({ id });
+  async user(phone: string) {
+    return this.repository.user({ phone });
   }
 
   async users() {

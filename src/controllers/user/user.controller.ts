@@ -18,11 +18,9 @@ export class UserController {
     return this.service.users();
   }
 
-  @Get(':id')
-  async user(@Param('id') id: string) {
-    console.log('id', id);
-
-    return this.service.user(id);
+  @Get(':phone')
+  async user(@Param('phone') phone: string) {
+    return this.service.user(phone);
   }
 
   @Post()

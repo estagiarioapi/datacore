@@ -9,9 +9,11 @@ export class UserRepository {
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
+    console.log(user);
+    return user;
   }
 
   async users(params: {
