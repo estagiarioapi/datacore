@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(dbgenerated("gen_random_uuid()"))
+  name          String?
+  lastName      String?
+  displayName   String?
+  email         String?        @unique
+  phone         String?        @unique
+  createdAt     DateTime?      @default(now())
+  updatedAt     DateTime?      @updatedAt
+  conversations Conversation[]
+}
+
+model Conversation {
+  id                   String                @id @default(dbgenerated("gen_random_uuid()"))
+  userId               String
+  guid                 String?
+  threadId             String?
+  assistantId          String?
+  isActive             Boolean?
+  createdAt            DateTime?             @default(now())
+  updatedAt            DateTime?             @updatedAt
+  user                 User                  @relation(fields: [userId], references: [id])
+  conversationMessages ConversationMessage[]
+}
+
+model Message {
+  id                   String                @id @default(dbgenerated("gen_random_uuid()"))
+  type                 String?
+  value                String?
+  conversationMessages ConversationMessage[]
+}
+
+model ConversationMessage {
+  id             String       @id @default(dbgenerated("gen_random_uuid()"))
+  conversationId String
+  messageId      String
+  isInput        Boolean?
+  createdAt      DateTime?    @default(now())
+  updatedAt      DateTime?    @updatedAt
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  message        Message      @relation(fields: [messageId], references: [id])
+}
