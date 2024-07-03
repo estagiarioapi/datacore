@@ -13,6 +13,17 @@ export class ConversationService {
     return this.repository.conversations({});
   }
 
+  async conversationOpened(id: string) {
+    return this.repository.conversations({
+      where: {
+        AND: {
+          userId: id,
+          isActive: true,
+        },
+      },
+    });
+  }
+
   async createConversation(data: any) {
     return this.repository.createConversation(data);
   }

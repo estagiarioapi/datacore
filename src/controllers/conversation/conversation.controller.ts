@@ -23,6 +23,11 @@ export class ConversationController {
     return this.service.conversation(id);
   }
 
+  @Get('opened/:id')
+  async conversationOpened(@Param('id') id: string) {
+    return this.service.conversationOpened(id);
+  }
+
   @Post()
   async createConversation(@Body() data: any) {
     return this.service.createConversation(data);
