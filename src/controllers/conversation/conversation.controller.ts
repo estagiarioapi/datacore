@@ -45,6 +45,6 @@ export class ConversationController {
 
   @Get('message/:thread')
   async getMessageFromOpenAI(@Param('thread') thread: string) {
-    return this.service.getMessageFromOpenAIApi(thread);
+    return await this.service.getMessageFromOpenAIApi(thread);
   }
 }

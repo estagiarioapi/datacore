@@ -38,11 +38,6 @@ export class ConversationService {
   }
 
   async getMessageFromOpenAIApi(thread: string) {
-    setTimeout(() => {
-      resposta(thread).then((data) => {
-        return data;
-      });
-    }, 5000);
     const resposta = async (thread: string) => {
       const payload = {
         thread: thread,
@@ -51,14 +46,29 @@ export class ConversationService {
       const headers = {
         'Content-Type': 'application/json',
       };
-      const url = `https://eytqilito555ozskhjp2p76auy0wfhtb.lambda-url.us-east-2.on.aws/`;
+      const url =
+        'https://eytqilito555ozskhjp2p76auy0wfhtb.lambda-url.us-east-2.on.aws/';
 
       try {
         const response = await axios.post(url, payload, { headers });
+        console.log(response.data);
         return response.data;
       } catch (error) {
         console.error(error);
+        throw error;
       }
     };
+
+    // Use Promise to wait for resposta to complete
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          const data = await resposta(thread);
+          resolve(data);
+        } catch (error) {
+          reject(error);
+        }
+      }, 3000);
+    });
   }
 }
