@@ -40,7 +40,6 @@ export class ConversationService {
   async getMessageFromOpenAIApi(thread: string) {
     setTimeout(() => {
       resposta(thread).then((data) => {
-        console.log(data);
         return data;
       });
     }, 5000);
