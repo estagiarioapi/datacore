@@ -53,6 +53,11 @@ export class ConversationController {
     return await this.createMessage(data);
   }
 
+  @Get('conversation-message')
+  async getConversationMessage(@Param('id') id: string) {
+    return await this.getConversationMessage(id);
+  }
+
   @Get('message/:thread')
   async getMessageFromOpenAI(@Param('thread') thread: string) {
     return await this.service.getMessageFromOpenAIApi(thread);

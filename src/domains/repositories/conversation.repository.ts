@@ -54,6 +54,17 @@ export class ConversationRepository {
     });
   }
 
+  async getConversationMessage(id: string) {
+    return this.prisma.conversationMessage.findMany({
+      where: {
+        conversationId: id,
+      },
+      include: {
+        message: true,
+      },
+    });
+  }
+
   async createMessage(data: Prisma.MessageCreateInput): Promise<Message> {
     return this.prisma.message.create({
       data,

@@ -37,6 +37,10 @@ export class ConversationService {
     return this.repository.createConversationMessage(data);
   }
 
+  async getConversationsMessages(id: string) {
+    return this.repository.getConversationMessage(id);
+  }
+
   async updateConversation(id: string, data: any) {
     return this.repository.updateConversation({ where: { id }, data });
   }
