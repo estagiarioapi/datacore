@@ -43,6 +43,11 @@ export class ConversationController {
     return this.service.deleteConversation(id);
   }
 
+  @Post('message')
+  async createConversationMessage(@Body() data: any) {
+    return await this.createConversationMessage(data);
+  }
+
   @Get('message/:thread')
   async getMessageFromOpenAI(@Param('thread') thread: string) {
     return await this.service.getMessageFromOpenAIApi(thread);

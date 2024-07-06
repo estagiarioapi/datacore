@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Conversation } from '@prisma/client';
+import { Conversation, ConversationMessage, Prisma } from '@prisma/client';
 import { PrismaService } from '../../infra/prisma/prisma.service';
 
 @Injectable()
@@ -33,8 +33,18 @@ export class ConversationRepository {
     });
   }
 
-  async createConversation(data: Prisma.ConversationCreateInput): Promise<Conversation> {
+  async createConversation(
+    data: Prisma.ConversationCreateInput,
+  ): Promise<Conversation> {
     return this.prisma.conversation.create({
+      data,
+    });
+  }
+
+  async createConversationMessage(
+    data: Prisma.ConversationMessageCreateInput,
+  ): Promise<ConversationMessage> {
+    return this.prisma.conversationMessage.create({
       data,
     });
   }
@@ -50,7 +60,9 @@ export class ConversationRepository {
     });
   }
 
-  async deleteConversation(where: Prisma.ConversationWhereUniqueInput): Promise<Conversation> {
+  async deleteConversation(
+    where: Prisma.ConversationWhereUniqueInput,
+  ): Promise<Conversation> {
     return this.prisma.conversation.delete({
       where,
     });

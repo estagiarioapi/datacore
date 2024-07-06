@@ -29,6 +29,10 @@ export class ConversationService {
     return this.repository.createConversation(data);
   }
 
+  async createConversationMessage(data: any) {
+    return this.repository.createConversationMessage(data);
+  }
+
   async updateConversation(id: string, data: any) {
     return this.repository.updateConversation({ where: { id }, data });
   }
@@ -59,7 +63,6 @@ export class ConversationService {
       }
     };
 
-    // Use Promise to wait for resposta to complete
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
         try {
