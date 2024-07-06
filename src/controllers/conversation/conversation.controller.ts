@@ -43,9 +43,14 @@ export class ConversationController {
     return this.service.deleteConversation(id);
   }
 
-  @Post('message')
+  @Post('conversation-message')
   async createConversationMessage(@Body() data: any) {
     return await this.createConversationMessage(data);
+  }
+
+  @Post('message')
+  async createMessage(@Body() data: any) {
+    return await this.createMessage(data);
   }
 
   @Get('message/:thread')

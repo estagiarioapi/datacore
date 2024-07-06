@@ -29,6 +29,10 @@ export class ConversationService {
     return this.repository.createConversation(data);
   }
 
+  async createMessage(data: any) {
+    return this.repository.createMessage(data);
+  }
+
   async createConversationMessage(data: any) {
     return this.repository.createConversationMessage(data);
   }
