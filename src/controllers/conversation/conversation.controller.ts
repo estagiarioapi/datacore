@@ -45,12 +45,12 @@ export class ConversationController {
 
   @Post('conversation-message')
   async createConversationMessage(@Body() data: any) {
-    return await this.createConversationMessage(data);
+    return await this.service.createConversationMessage(data);
   }
 
   @Post('message')
   async createMessage(@Body() data: any) {
-    return await this.createMessage(data);
+    return await this.service.createMessage(data);
   }
 
   @Get('conversation-message')
