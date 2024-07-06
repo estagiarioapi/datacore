@@ -55,7 +55,7 @@ export class ConversationController {
 
   @Get('conversation-message')
   async getConversationMessage(@Param('id') id: string) {
-    return await this.service.getConversationMessage(id);
+    return await this.service.getConversationsMessages(id);
   }
 
   @Get('message/:thread')
