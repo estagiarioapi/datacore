@@ -79,7 +79,7 @@ export class ConversationService {
         } catch (error) {
           reject(error);
         }
-      }, 7000);
+      }, 10000);
     });
   }
 }
