@@ -42,4 +42,25 @@ export class ConversationController {
   async deleteConversation(@Param('id') id: string) {
     return this.service.deleteConversation(id);
   }
+
+  @Post('conversation-message')
+  async createConversationMessage(@Body() data: any) {
+    return await this.service.createConversationMessage(data);
+  }
+
+  @Post('message')
+  async createMessage(@Body() data: any) {
+    return await this.service.createMessage(data);
+  }
+
+  @Get('conversation-message/:id')
+  async getConversationMessage(@Param('id') id: string) {
+    console.log(id);
+    return await this.service.getConversationsMessages(id);
+  }
+
+  @Get('message/:thread')
+  async getMessageFromOpenAI(@Param('thread') thread: string) {
+    return await this.service.getMessageFromOpenAIApi(thread);
+  }
 }
