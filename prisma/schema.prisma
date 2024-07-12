@@ -25,6 +25,7 @@ model Conversation {
   guid                 String?
   threadId             String?
   assistantId          String?
+  vectorStoreId        String?
   isActive             Boolean?
   createdAt            DateTime?             @default(now())
   updatedAt            DateTime?             @updatedAt
