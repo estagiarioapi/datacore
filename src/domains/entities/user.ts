@@ -1,5 +1,7 @@
-export class User {
-  id: number;
+import { User as UserBase } from '@prisma/client';
+
+export class User implements UserBase {
+  id: string;
   name: string;
   lastName: string;
   displayName: string;
