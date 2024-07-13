@@ -50,6 +50,7 @@ export class LeadEventService {
         invitesUsed: {
           increment: 1,
         },
+        updatedAt: new Date(),
       },
     });
 

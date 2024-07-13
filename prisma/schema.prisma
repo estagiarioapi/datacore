@@ -79,6 +79,8 @@ model Lead {
   waitListNumber    Int 
   descriptionRole   String
   invitesUsed       Int @default(0)
+  acceptInvite     Boolean @default(false)
+
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
 
