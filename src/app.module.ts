@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConversationService } from './applications/conversation/conversation.service';
-import { UserService } from './applications/user/user.service';
+import { ConversationService } from './applications/services/conversation/conversation.service';
+import { UserService } from './applications/services/user/user.service';
 import { ConversationController } from './controllers/conversation/conversation.controller';
 import { UserController } from './controllers/user/user.controller';
 import { ConversationRepository } from './domains/repositories/conversation.repository';
@@ -11,8 +11,12 @@ import configuration, {
   isProduction,
 } from './infra/configuration/configuration';
 import { LeadController } from './controllers/lead/lead.controller';
-import { LeadService } from './applications/lead/lead.service';
+import { LeadService } from './applications/services/lead/lead.service';
 import { LeadRepository } from './domains/repositories/lead.repository';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { LeadEventService } from './applications/events/lead/lead.event.service';
+import { LeadInviteRepository } from './domains/repositories/leadInvite.repository';
+import { LeadInviteService } from './applications/services/lead/lead-invite.service';
 
 @Module({
   imports: [
@@ -20,6 +24,10 @@ import { LeadRepository } from './domains/repositories/lead.repository';
       envFilePath: `${process.cwd()}/.env${isProduction() ? `` : '.development'}`,
       load: [configuration],
       isGlobal: true,
+    }),
+    EventEmitterModule.forRoot({
+      global: true,
+      wildcard: true,
     }),
   ],
   controllers: [UserController, ConversationController, LeadController],
@@ -29,8 +37,11 @@ import { LeadRepository } from './domains/repositories/lead.repository';
     UserRepository,
     ConversationRepository,
     ConversationService,
-    LeadService,
     LeadRepository,
+    LeadService,
+    LeadInviteRepository,
+    LeadInviteService,
+    LeadEventService,
   ],
 })
 export class AppModule {}

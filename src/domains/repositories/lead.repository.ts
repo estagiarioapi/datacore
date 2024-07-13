@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { Lead, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma/prisma.service';
 
+@Injectable()
 export class LeadRepository {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -55,13 +57,27 @@ export class LeadRepository {
   }
 
   async findByInviteCode(inviteCode: string): Promise<Lead | null> {
-    return this.prisma.lead.findFirst({
+    return this.prisma.lead.findUnique({
       where: {
         inviteCode,
       },
     });
   }
 
+  async validCode(code: string): Promise<boolean> {
+    return (
+      (await this.prisma.lead.count({
+        where: {
+          inviteCode: code,
+        },
+      })) === 0
+    );
+  }
+
+  /**
+   * @remarks every number generated is above 100
+   * @returns the next waitlist number
+   */
   async getNextWaitListNumber(): Promise<number> {
     const count = await this.prisma.lead.count({
       where: {
@@ -69,6 +85,22 @@ export class LeadRepository {
       },
     });
 
-    return count + 1;
+    return count > 0 ? count + 100 : 100;
+  }
+
+  async findByEmail(email: string): Promise<Lead | null> {
+    return this.prisma.lead.findUnique({
+      where: {
+        email,
+      },
+    });
+  }
+
+  async findByPhone(phone: string): Promise<Lead | null> {
+    return this.prisma.lead.findUnique({
+      where: {
+        phone,
+      },
+    });
   }
 }

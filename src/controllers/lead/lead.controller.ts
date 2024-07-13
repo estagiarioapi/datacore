@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { LeadService } from 'src/applications/lead/lead.service';
+import { Body, Controller, Param, Post, Get } from '@nestjs/common';
+import { LeadService } from 'src/applications/services/lead/lead.service';
 import { CreateLeadDto } from 'src/domains/dto/createLead.dto';
 
 @Controller('lead')
@@ -11,11 +11,8 @@ export class LeadController {
     return await this.leadService.createLead(dto);
   }
 
-  @Get('generate-invite-code')
-  public async generateInviteCode(
-    @Query('email') email: string,
-    @Query('phone') phone: string,
-  ) {
-    return await this.leadService.generateInviteCode(email, phone);
+  @Get('AuthorizedPhone/:phone')
+  public async AuthorizedPhone(@Param('phone') phone: string) {
+    return await this.leadService.isPhoneAuthorized(phone);
   }
 }

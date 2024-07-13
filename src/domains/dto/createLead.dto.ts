@@ -23,9 +23,6 @@ export class CreateLeadDto {
   @IsEnum(Role)
   readonly role: Role;
 
-  @IsString()
   readonly roleDescription?: string;
-
-  @IsString()
-  readonly inviteCode?: string;
+  readonly inviteByCode?: string;
 }

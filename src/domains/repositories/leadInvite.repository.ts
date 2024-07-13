@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { LeadInvite, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma/prisma.service';
 
+@Injectable()
 export class LeadInviteRepository {
   constructor(private readonly prisma: PrismaService) {}
 
