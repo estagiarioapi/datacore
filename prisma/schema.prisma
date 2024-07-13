@@ -62,6 +62,12 @@ enum InviteStatus {
   ACCEPTED
 }
 
+enum LeadStatus {
+  PENDING
+  ACCEPTED
+  WAITLIST
+}
+
 model Lead {
   id          String    @id @default(dbgenerated("gen_random_uuid()"))
   name        String
@@ -69,6 +75,8 @@ model Lead {
   phone       String    @unique
   inviteCode  String    @unique
   role        Role
+  status      LeadStatus
+  waitListNumber    Int 
   descriptionRole   String
   invitesUsed       Int @default(0)
   createdAt   DateTime? @default(now())
@@ -79,8 +87,8 @@ model Lead {
 }
 
 model LeadInvite {
-  id          String    @id @default(dbgenerated("gen_random_uuid()"))
-  originLeadId String   
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  originLeadId  String   
   destinyLeadId String
   inviteCode    String
   inviteStatus  InviteStatus
