@@ -7,7 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ConversationService } from 'src/applications/conversation/conversation.service';
+import { ConversationService } from 'src/applications/services/conversation/conversation.service';
 
 @Controller('conversation')
 export class ConversationController {
