@@ -74,4 +74,8 @@ export class LeadService {
       return roleDescription;
     }
   }
+
+  async getLead(phone: string) {
+    return await this.leadRepository.findByPhone(phone)
+  }
 }

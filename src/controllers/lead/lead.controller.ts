@@ -15,4 +15,9 @@ export class LeadController {
   public async AuthorizedPhone(@Param('phone') phone: string) {
     return await this.leadService.isPhoneAuthorized(phone);
   }
+
+  @Get(':phone')
+  public async getLead(@Param('phone') phone: string) {
+    return await this.leadService.getLead(phone)
+  }
 }
