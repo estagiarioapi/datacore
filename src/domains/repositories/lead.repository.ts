@@ -104,7 +104,7 @@ export class LeadRepository {
     });
   }
 
-  async getTrialEndingsPromotion(): Promise<Lead[]> {
+  async get2HoursEndingsPromotion(): Promise<Lead[]> {
     const [start, end] = [
       new Date(new Date().getTime() - 2.2 * 60 * 60 * 1000),
       new Date(new Date().getTime() + 10 * 60 * 1000),
@@ -113,18 +113,33 @@ export class LeadRepository {
     return this.prisma.lead.findMany({
       where: {
         status: 'WAITLIST',
-        AND: [
-          {
-            createdAt: {
-              gte: start,
-            },
-          },
-          {
-            createdAt: {
-              lte: end,
-            },
-          },
-        ],
+        invitesUsed: {
+          gte: 1,
+        },
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+      },
+    });
+  }
+
+  async get24HoursEndingsPromotion(): Promise<Lead[]> {
+    const [start, end] = [
+      new Date(new Date().getTime() - 24.2 * 60 * 60 * 1000),
+      new Date(new Date().getTime() + 10 * 60 * 1000),
+    ];
+
+    return this.prisma.lead.findMany({
+      where: {
+        status: 'WAITLIST',
+        invitesUsed: {
+          equals: 0,
+        },
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
       },
     });
   }

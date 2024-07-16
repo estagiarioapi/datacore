@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { LeadService } from '../services/lead/lead.service';
 import { WhatsAppService } from 'src/crosscuting/integration/whatsapp/whatsapp.service';
+import {
+  messageTemplate24HourRemaining,
+  messageTemplate2HourRemaining,
+} from 'src/crosscuting/integration/whatsapp/enum/messageTemplate';
 
 @Injectable()
 export class LeadTaskService {
@@ -10,19 +14,32 @@ export class LeadTaskService {
     private readonly whats: WhatsAppService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE, {
+  @Cron(CronExpression.EVERY_2_HOURS, {
     name: 'detectTrialEndingsPromotion',
     timeZone: 'America/Sao_Paulo',
   })
-  async detectTrialEndingsPromotion() {
-    console.log('Running detectTrialEndingsPromotion');
-    const results = await this.leadService.getTrialEndingsPromotion();
-    console.log(results);
+  async detect2HourEndingsPromotion() {
+    const results = await this.leadService.get2HoursEndingsPromotion();
 
     for (const lead of results) {
       this.whats.sendMessageTemplate(
         lead.phone,
-        'trialEndPromotion::invites=' + lead.invitesUsed,
+        messageTemplate2HourRemaining(lead.invitesUsed),
+      );
+    }
+  }
+
+  @Cron(CronExpression.EVERY_2_HOURS, {
+    name: 'detectTrialEndings',
+    timeZone: 'America/Sao_Paulo',
+  })
+  async detectTrialEndings() {
+    const results = await this.leadService.get24HoursEndingsPromotion();
+
+    for (const lead of results) {
+      this.whats.sendMessageTemplate(
+        lead.phone,
+        messageTemplate24HourRemaining(lead.invitesUsed),
       );
     }
   }

@@ -65,8 +65,12 @@ export class LeadService {
     return await this.leadRepository.findByPhone(standardizeBRPhone(phone));
   }
 
-  async getTrialEndingsPromotion() {
-    return await this.leadRepository.getTrialEndingsPromotion();
+  async get2HoursEndingsPromotion() {
+    return await this.leadRepository.get2HoursEndingsPromotion();
+  }
+
+  async get24HoursEndingsPromotion() {
+    return await this.leadRepository.get24HoursEndingsPromotion();
   }
 
   private getRoleDescription(role: Role, roleDescription: string) {
