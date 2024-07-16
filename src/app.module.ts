@@ -17,6 +17,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LeadEventService } from './applications/events/lead/lead.event.service';
 import { LeadInviteRepository } from './domains/repositories/leadInvite.repository';
 import { LeadInviteService } from './applications/services/lead/lead-invite.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { LeadTaskService } from './applications/tasks/lead.task.service';
+import { WhatsAppService } from './crosscuting/integration/whatsapp/whatsapp.service';
 
 @Module({
   imports: [
@@ -28,6 +31,9 @@ import { LeadInviteService } from './applications/services/lead/lead-invite.serv
     EventEmitterModule.forRoot({
       global: true,
       wildcard: true,
+    }),
+    ScheduleModule.forRoot({
+      cronJobs: true,
     }),
   ],
   controllers: [UserController, ConversationController, LeadController],
@@ -42,6 +48,8 @@ import { LeadInviteService } from './applications/services/lead/lead-invite.serv
     LeadInviteRepository,
     LeadInviteService,
     LeadEventService,
+    LeadTaskService,
+    WhatsAppService,
   ],
 })
 export class AppModule {}

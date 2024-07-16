@@ -65,6 +65,10 @@ export class LeadService {
     return await this.leadRepository.findByPhone(standardizeBRPhone(phone));
   }
 
+  async getTrialEndingsPromotion() {
+    return await this.leadRepository.getTrialEndingsPromotion();
+  }
+
   private getRoleDescription(role: Role, roleDescription: string) {
     if (role === Role.LAWYER) {
       return 'Advogado';

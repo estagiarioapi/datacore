@@ -29,6 +29,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/event-emitter": "^2.0.4",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^4.1.0",
     "@prisma/client": "^5.16.1",
     "@vendia/serverless-express": "^4.12.6",
     "aws-lambda": "^1.0.7",

@@ -103,4 +103,29 @@ export class LeadRepository {
       },
     });
   }
+
+  async getTrialEndingsPromotion(): Promise<Lead[]> {
+    const [start, end] = [
+      new Date(new Date().getTime() - 2.2 * 60 * 60 * 1000),
+      new Date(new Date().getTime() + 10 * 60 * 1000),
+    ];
+
+    return this.prisma.lead.findMany({
+      where: {
+        status: 'WAITLIST',
+        AND: [
+          {
+            createdAt: {
+              gte: start,
+            },
+          },
+          {
+            createdAt: {
+              lte: end,
+            },
+          },
+        ],
+      },
+    });
+  }
 }
