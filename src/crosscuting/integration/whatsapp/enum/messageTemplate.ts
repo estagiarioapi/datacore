@@ -5,6 +5,7 @@ export enum MessageTemplate {
   SentOneInviteTwo = 'message02_02',
   SentTwoInvites = 'message03',
   SentThreeInvites = 'message04',
+  AvailablePosition = 'message05',
 }
 
 export const messageTemplate24HourRemaining = (

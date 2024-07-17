@@ -80,6 +80,19 @@ export class LeadService {
     });
   }
 
+  async shiftWaitList(positions: number) {
+    const leads = await this.leadRepository.shiftWaitList(positions);
+
+    this.eventEmitter.emit('lead.accepted', leads);
+    this.eventEmitter.emit('lead.syncWailist', positions);
+
+    return leads.map((lead) => ({
+      phone: lead.phone,
+      name: lead.name,
+      invited: lead.invitesUsed,
+    }));
+  }
+
   private getRoleDescription(role: Role, roleDescription: string) {
     if (role === Role.LAWYER) {
       return 'Advogado';

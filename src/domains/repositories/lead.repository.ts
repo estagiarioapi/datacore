@@ -140,4 +140,54 @@ export class LeadRepository {
       },
     });
   }
+
+  async shiftWaitList(positions: number) {
+    const leads = await this.prisma.lead.findMany({
+      where: {
+        status: 'WAITLIST',
+      },
+      orderBy: {
+        waitListNumber: 'asc',
+      },
+      take: positions,
+    });
+
+    for (let lead of leads) {
+      lead = await this.prisma.lead.update({
+        where: {
+          id: lead.id,
+        },
+        data: {
+          waitListNumber: 99,
+          status: 'ACCEPTED',
+        },
+      });
+    }
+
+    return leads;
+  }
+
+  async syncWaitList(positions: number) {
+    await this.prisma.lead.updateMany({
+      where: {
+        status: 'WAITLIST',
+      },
+      data: {
+        waitListNumber: {
+          decrement: positions,
+        },
+      },
+    });
+  }
+
+  async swapWaitList(leadId: string, waitListNumber: number) {
+    return this.prisma.lead.update({
+      where: {
+        id: leadId,
+      },
+      data: {
+        waitListNumber,
+      },
+    });
+  }
 }

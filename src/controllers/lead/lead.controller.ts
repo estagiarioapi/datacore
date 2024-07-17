@@ -20,4 +20,9 @@ export class LeadController {
   public async acceptSendInvite(@Param('phone') phone: string) {
     return await this.leadService.acceptSendInvite(phone);
   }
+
+  @Put('shiftWaitList/:positions')
+  public async shiftWaitList(@Param('positions') positions: number) {
+    return await this.leadService.shiftWaitList(positions);
+  }
 }

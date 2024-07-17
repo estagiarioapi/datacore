@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Logger } from 'src/crosscuting/decorators/logger';
 import { assembleUrl } from 'src/crosscuting/util/http';
 import { isProduction } from 'src/infra/configuration/configuration';
+import { MessageTemplate } from './enum/messageTemplate';
 
 @Injectable()
 export class WhatsAppService {
@@ -10,7 +11,7 @@ export class WhatsAppService {
     : 'http://localhost:3001/';
 
   @Logger()
-  async sendMessageTemplate(phoneNumber: string, modelName: string) {
+  async sendMessageTemplate(phoneNumber: string, modelName: MessageTemplate) {
     const url = assembleUrl(this.apiUrl, 'event/sendMessageTemplate');
     const body = JSON.stringify({ phoneNumber, modelName });
     console.log(url, body);

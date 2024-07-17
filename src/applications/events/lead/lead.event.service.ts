@@ -5,10 +5,13 @@ import { LeadInviteRepository } from 'src/domains/repositories/leadInvite.reposi
 import { CreatedLead } from '../models/createdLead';
 import { InviteStatus } from '@prisma/client';
 import { UpdatedLead } from '../models/updatedLead';
+import { WhatsAppService } from 'src/crosscuting/integration/whatsapp/whatsapp.service';
+import { MessageTemplate } from 'src/crosscuting/integration/whatsapp/enum/messageTemplate';
 
 @Injectable()
 export class LeadEventService {
   constructor(
+    private readonly whats: WhatsAppService,
     private readonly leadRepository: LeadRepository,
     private readonly leadInviteRepository: LeadInviteRepository,
   ) {}
@@ -68,5 +71,20 @@ export class LeadEventService {
     // send a message saying that his invite was used
     // and that his position in the waitlist has changed
     console.log('leadUpdated', data);
+  }
+
+  @OnEvent('lead.accepted', { nextTick: true, async: true })
+  private async onLeadAccepted(data: CreatedLead[]) {
+    for (const lead of data) {
+      this.whats.sendMessageTemplate(
+        lead.phone,
+        MessageTemplate.AvailablePosition,
+      );
+    }
+  }
+
+  @OnEvent('lead.syncWailist', { nextTick: true, async: true })
+  private async onLeadRejected(positions: number) {
+    this.leadRepository.syncWaitList(positions);
   }
 }
