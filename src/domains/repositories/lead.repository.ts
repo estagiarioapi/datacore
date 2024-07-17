@@ -127,15 +127,12 @@ export class LeadRepository {
   async get24HoursEndingsPromotion(): Promise<Lead[]> {
     const [start, end] = [
       new Date(new Date().getTime() - 24.2 * 60 * 60 * 1000),
-      new Date(new Date().getTime() + 10 * 60 * 1000),
+      new Date(new Date().getTime() - 22 * 60 * 60 * 1000),
     ];
 
     return this.prisma.lead.findMany({
       where: {
         status: 'WAITLIST',
-        invitesUsed: {
-          equals: 0,
-        },
         createdAt: {
           gte: start,
           lte: end,
