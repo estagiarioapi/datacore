@@ -1,3 +1,5 @@
+import * as crypto from 'crypto';
+
 export async function randomStringBiased(value: string) {
   const size = 16;
   const buffer = Buffer.from(value.concat(Date.now().toString()));
