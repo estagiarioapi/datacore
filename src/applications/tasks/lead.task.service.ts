@@ -6,6 +6,7 @@ import {
   messageTemplate24HourRemaining,
   messageTemplate2HourRemaining,
 } from 'src/crosscuting/integration/whatsapp/enum/messageTemplate';
+import { Logger } from 'src/crosscuting/decorators/logger';
 
 @Injectable()
 export class LeadTaskService {
@@ -14,13 +15,13 @@ export class LeadTaskService {
     private readonly whats: WhatsAppService,
   ) {}
 
-  @Cron(CronExpression.EVERY_2_HOURS, {
+  @Cron(CronExpression.EVERY_MINUTE, {
     name: 'detectTrialEndingsPromotion',
     timeZone: 'America/Sao_Paulo',
   })
+  @Logger()
   async detect2HourEndingsPromotion() {
     const results = await this.leadService.get2HoursEndingsPromotion();
-
     for (const lead of results) {
       this.whats.sendMessageTemplate(
         lead.phone,
@@ -29,13 +30,13 @@ export class LeadTaskService {
     }
   }
 
-  @Cron(CronExpression.EVERY_2_HOURS, {
+  @Cron(CronExpression.EVERY_MINUTE, {
     name: 'detectTrialEndings',
     timeZone: 'America/Sao_Paulo',
   })
+  @Logger()
   async detectTrialEndings() {
     const results = await this.leadService.get24HoursEndingsPromotion();
-
     for (const lead of results) {
       this.whats.sendMessageTemplate(
         lead.phone,

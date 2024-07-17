@@ -1,20 +1,22 @@
 export function assembleQueryParams(params: Record<string, any>): string {
   return safeObject(params)
-    ? Object.keys(params)
+    ? `?${Object.keys(params)
         .map((key) => {
           return `${key}=${params[key]}`;
         })
-        .join('&')
+        .join('&')}`
     : '';
 }
 
 export function assembleUrl(
   baseUrl: string,
   endpoint: string,
-  params: Record<string, any>,
+  params?: Record<string, any>,
 ): string {
   baseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-  return `${baseUrl}${endpoint}?${assembleQueryParams(params)}`;
+  endpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const paramsString = params ? assembleQueryParams(params) : '';
+  return `${baseUrl}${endpoint}${paramsString}`;
 }
 
 export function safeArray<T>(array: T[]): boolean {

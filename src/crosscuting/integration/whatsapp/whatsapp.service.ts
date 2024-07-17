@@ -1,18 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { Logger } from 'src/crosscuting/decorators/logger';
 import { assembleUrl } from 'src/crosscuting/util/http';
+import { isProduction } from 'src/infra/configuration/configuration';
 
 @Injectable()
 export class WhatsAppService {
-  private readonly apiUrl: string =
-    'https://f0hvd5xnvj.execute-api.us-east-1.amazonaws.com/dev/';
+  private readonly apiUrl: string = isProduction()
+    ? 'https://f0hvd5xnvj.execute-api.us-east-1.amazonaws.com/dev/'
+    : 'http://localhost:3001/';
 
-  async sendMessageTemplate(phone: string, modelName: string) {
-    const url = assembleUrl(this.apiUrl, 'event/', { phone, modelName });
-    console.log(url);
+  @Logger()
+  async sendMessageTemplate(phoneNumber: string, modelName: string) {
+    const url = assembleUrl(this.apiUrl, 'event/sendMessageTemplate');
+    const body = JSON.stringify({ phoneNumber, modelName });
+    console.log(url, body);
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => console.log(data))
+    fetch(url, {
+      body,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (data) => console.log(await data.text()))
       .catch((error) => console.error(error));
   }
 }

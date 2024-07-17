@@ -1,8 +1,8 @@
 export enum MessageTemplate {
   OnlyNoneInvite = 'message01',
   SentOneInvite = 'message02',
-  SentOneInviteOnly = 'message02_1',
-  SentOneInviteTwo = 'message02_2',
+  SentOneInviteOnly = 'message02_01',
+  SentOneInviteTwo = 'message02_02',
   SentTwoInvites = 'message03',
   SentThreeInvites = 'message04',
 }

@@ -73,6 +73,13 @@ export class LeadService {
     return await this.leadRepository.get24HoursEndingsPromotion();
   }
 
+  async acceptSendInvite(phone: string) {
+    return await this.leadRepository.updateLead({
+      where: { phone: standardizeBRPhone(phone) },
+      data: { acceptInvite: true },
+    });
+  }
+
   private getRoleDescription(role: Role, roleDescription: string) {
     if (role === Role.LAWYER) {
       return 'Advogado';
