@@ -15,7 +15,7 @@ export class LeadTaskService {
     private readonly whats: WhatsAppService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE, {
+  @Cron(CronExpression.EVERY_2_HOURS, {
     name: 'detectTrialEndingsPromotion',
     timeZone: 'America/Sao_Paulo',
   })
@@ -30,7 +30,7 @@ export class LeadTaskService {
     }
   }
 
-  @Cron(CronExpression.EVERY_MINUTE, {
+  @Cron(CronExpression.EVERY_2_HOURS, {
     name: 'detectTrialEndings',
     timeZone: 'America/Sao_Paulo',
   })
