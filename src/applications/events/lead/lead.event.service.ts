@@ -6,7 +6,10 @@ import { CreatedLead } from '../models/createdLead';
 import { InviteStatus } from '@prisma/client';
 import { UpdatedLead } from '../models/updatedLead';
 import { WhatsAppService } from 'src/crosscuting/integration/whatsapp/whatsapp.service';
-import { MessageTemplate } from 'src/crosscuting/integration/whatsapp/enum/messageTemplate';
+import {
+  MessageTemplate,
+  messageTemplate2HourRemaining,
+} from 'src/crosscuting/integration/whatsapp/enum/messageTemplate';
 
 @Injectable()
 export class LeadEventService {
@@ -71,6 +74,10 @@ export class LeadEventService {
     // send a message saying that his invite was used
     // and that his position in the waitlist has changed
     console.log('leadUpdated', data);
+    this.whats.sendMessageTemplate(
+      data.phone,
+      messageTemplate2HourRemaining(data.invites),
+    );
   }
 
   @OnEvent('lead.accepted', { nextTick: true, async: true })
