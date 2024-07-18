@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post, Get, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Post,
+  Get,
+  Put,
+  Options,
+} from '@nestjs/common';
 import { LeadService } from 'src/applications/services/lead/lead.service';
 import { CreateLeadDto } from 'src/domains/dto/createLead.dto';
 
@@ -7,6 +15,7 @@ export class LeadController {
   constructor(private readonly leadService: LeadService) {}
 
   @Post('create')
+  @Options('create')
   public async createLead(@Body() dto: CreateLeadDto) {
     return await this.leadService.createLead(dto);
   }
