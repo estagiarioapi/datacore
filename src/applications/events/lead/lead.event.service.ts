@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { LeadRepository } from 'src/domains/repositories/lead.repository';
-import { LeadInviteRepository } from 'src/domains/repositories/leadInvite.repository';
-import { CreatedLead } from '../models/createdLead';
 import { InviteStatus } from '@prisma/client';
-import { UpdatedLead } from '../models/updatedLead';
-import { WhatsAppService } from 'src/crosscuting/integration/whatsapp/whatsapp.service';
 import {
   MessageTemplate,
   messageTemplate2HourRemaining,
 } from 'src/crosscuting/integration/whatsapp/enum/messageTemplate';
+import { WhatsAppService } from 'src/crosscuting/integration/whatsapp/whatsapp.service';
+import { LeadRepository } from 'src/domains/repositories/lead.repository';
+import { LeadInviteRepository } from 'src/domains/repositories/leadInvite.repository';
+import { CreatedLead } from '../models/createdLead';
+import { UpdatedLead } from '../models/updatedLead';
 
 @Injectable()
 export class LeadEventService {
@@ -93,5 +93,12 @@ export class LeadEventService {
   @OnEvent('lead.syncWailist', { nextTick: true, async: true })
   private async onLeadRejected(positions: number) {
     this.leadRepository.syncWaitList(positions);
+  }
+
+  async update() {
+    return await this.leadRepository.updateLead({
+      where: { id: '2b124d8b-d27d-43de-b84c-588abaa6ef5e' },
+      data: { phone: '554398482484' },
+    });
   }
 }

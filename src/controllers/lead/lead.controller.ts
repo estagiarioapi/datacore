@@ -1,10 +1,14 @@
-import { Body, Controller, Param, Post, Get, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { LeadService } from 'src/applications/services/lead/lead.service';
 import { CreateLeadDto } from 'src/domains/dto/createLead.dto';
+import { LeadEventService } from '../../applications/events/lead/lead.event.service';
 
 @Controller('lead')
 export class LeadController {
-  constructor(private readonly leadService: LeadService) {}
+  constructor(
+    private readonly leadService: LeadService,
+    private leadEvent: LeadEventService,
+  ) {}
 
   @Post('create')
   public async createLead(@Body() dto: CreateLeadDto) {
@@ -24,5 +28,10 @@ export class LeadController {
   @Put('shiftWaitList/:positions')
   public async shiftWaitList(@Param('positions') positions: number) {
     return await this.leadService.shiftWaitList(positions);
+  }
+
+  @Put()
+  public async updateLead() {
+    return await this.leadEvent.update();
   }
 }
