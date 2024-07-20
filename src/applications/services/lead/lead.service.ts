@@ -62,7 +62,7 @@ export class LeadService {
   }
 
   async isPhoneAuthorized(phone: string) {
-    return await this.leadRepository.findByPhone(phone);
+    return await this.leadRepository.findByPhone(standardizeBRPhone(phone));
   }
 
   async get2HoursEndingsPromotion() {
