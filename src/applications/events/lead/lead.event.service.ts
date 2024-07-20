@@ -3,13 +3,14 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { InviteStatus } from '@prisma/client';
 import {
   MessageTemplate,
-  messageTemplate2HourRemaining,
+  messageTemplateInviteSent,
 } from 'src/crosscuting/integration/whatsapp/enum/messageTemplate';
 import { WhatsAppService } from 'src/crosscuting/integration/whatsapp/whatsapp.service';
 import { LeadRepository } from 'src/domains/repositories/lead.repository';
 import { LeadInviteRepository } from 'src/domains/repositories/leadInvite.repository';
 import { CreatedLead } from '../models/createdLead';
 import { UpdatedLead } from '../models/updatedLead';
+import { Logger } from 'src/crosscuting/decorators/logger';
 
 @Injectable()
 export class LeadEventService {
@@ -20,9 +21,8 @@ export class LeadEventService {
   ) {}
 
   @OnEvent('lead.created', { nextTick: true, async: true })
+  @Logger()
   private async onLeadCreated(data: CreatedLead) {
-    console.log('leadCreated', data);
-
     if (!data.invitedByCode) {
       return;
     }
@@ -65,40 +65,59 @@ export class LeadEventService {
       name: invitedBy.name,
       email: invitedBy.email,
       phone: invitedBy.phone,
+      createdAt: invitedBy.createdAt,
       invites: leadOriginUpdate.invitesUsed,
+      waitListNumber: leadOriginUpdate.waitListNumber,
     });
   }
 
+  @Logger()
   private async onLeadUpdated(data: UpdatedLead) {
-    // lead updated logic
-    // send a message saying that his invite was used
-    // and that his position in the waitlist has changed
-    console.log('leadUpdated', data);
-    this.whats.sendMessageTemplate(
-      data.phone,
-      messageTemplate2HourRemaining(data.invites),
-    );
+    const start = Date.now() - data.createdAt.getTime();
+    const hours = Math.floor(start / 36e5);
+
+    const parameters = {
+      type: 'body',
+      parameters: [
+        {
+          type: 'text',
+          text: 48 - hours,
+        },
+      ],
+    };
+
+    Promise.allSettled([
+      this.whats.sendMessageTemplate(
+        data.phone,
+        messageTemplateInviteSent(data.invites),
+        data.invites >= 3 ? null : parameters,
+      ),
+      this.leadRepository.updateWaitListNumberRange(
+        data.id,
+        data.waitListNumber,
+        10,
+      ),
+    ]);
   }
 
   @OnEvent('lead.accepted', { nextTick: true, async: true })
-  private async onLeadAccepted(data: CreatedLead[]) {
-    for (const lead of data) {
-      this.whats.sendMessageTemplate(
-        lead.phone,
-        MessageTemplate.AvailablePosition,
-      );
-    }
+  @Logger()
+  private async onLeadAccepted(positions: number) {
+    const leads = await this.leadRepository.shiftWaitList(positions);
+
+    Promise.all(
+      leads.map((lead) => {
+        this.whats.sendMessageTemplate(
+          lead.phone,
+          MessageTemplate.AvailablePosition,
+        );
+      }),
+    );
   }
 
   @OnEvent('lead.syncWailist', { nextTick: true, async: true })
-  private async onLeadRejected(positions: number) {
+  @Logger()
+  private async onSyncWaitList(positions: number) {
     this.leadRepository.syncWaitList(positions);
-  }
-
-  async update() {
-    return await this.leadRepository.updateLead({
-      where: { id: '2b124d8b-d27d-43de-b84c-588abaa6ef5e' },
-      data: { phone: '554398482484' },
-    });
   }
 }

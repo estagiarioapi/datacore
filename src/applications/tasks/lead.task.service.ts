@@ -44,4 +44,22 @@ export class LeadTaskService {
       );
     }
   }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+    name: 'updateWaitListNumber',
+    timeZone: 'America/Sao_Paulo',
+  })
+  @Logger()
+  async updateWaitListNumberAtMidNigth() {
+    await this.leadService.updateWaitListNumber();
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_NOON, {
+    name: 'updateWaitListNumber',
+    timeZone: 'America/Sao_Paulo',
+  })
+  @Logger()
+  async updateWaitListNumberMidDay() {
+    await this.leadService.updateWaitListNumber();
+  }
 }

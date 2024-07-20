@@ -105,16 +105,16 @@ export class LeadRepository {
   }
 
   async get2HoursEndingsPromotion(): Promise<Lead[]> {
-    const [start, end] = [
-      new Date(new Date().getTime() - 2.2 * 60 * 60 * 1000),
-      new Date(new Date().getTime() + 10 * 60 * 1000),
-    ];
+    const now = new Date();
+    const start = new Date(now.getTime() - 46 * 60 * 60 * 1000);
+    const end = new Date(now.getTime() - 44 * 60 * 60 * 1000);
 
     return this.prisma.lead.findMany({
       where: {
         status: 'WAITLIST',
         invitesUsed: {
           gte: 1,
+          lte: 2,
         },
         createdAt: {
           gte: start,
@@ -125,14 +125,17 @@ export class LeadRepository {
   }
 
   async get24HoursEndingsPromotion(): Promise<Lead[]> {
-    const [start, end] = [
-      new Date(new Date().getTime() - 24.2 * 60 * 60 * 1000),
-      new Date(new Date().getTime() - 22 * 60 * 60 * 1000),
-    ];
+    const now = new Date();
+    const start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const end = new Date(now.getTime() - 22 * 60 * 60 * 1000);
 
     return this.prisma.lead.findMany({
       where: {
         status: 'WAITLIST',
+        invitesUsed: {
+          gte: 0,
+          lte: 2,
+        },
         createdAt: {
           gte: start,
           lte: end,
@@ -150,19 +153,23 @@ export class LeadRepository {
         waitListNumber: 'asc',
       },
       take: positions,
+      select: {
+        id: true,
+        phone: true,
+      },
     });
 
-    for (let lead of leads) {
-      lead = await this.prisma.lead.update({
-        where: {
-          id: lead.id,
+    await this.prisma.lead.updateMany({
+      where: {
+        id: {
+          in: leads.map((lead) => lead.id),
         },
-        data: {
-          waitListNumber: 99,
-          status: 'ACCEPTED',
-        },
-      });
-    }
+      },
+      data: {
+        waitListNumber: 99,
+        status: 'ACCEPTED',
+      },
+    });
 
     return leads;
   }
@@ -180,14 +187,75 @@ export class LeadRepository {
     });
   }
 
-  async swapWaitList(leadId: string, waitListNumber: number) {
-    return this.prisma.lead.update({
-      where: {
-        id: leadId,
-      },
-      data: {
-        waitListNumber,
-      },
+  async updateWaitListNumber(): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const leads = await tx.lead.findMany({
+        orderBy: [{ invitesUsed: 'desc' }, { createdAt: 'asc' }],
+        where: {
+          status: 'WAITLIST',
+        },
+      });
+
+      const min = Math.min(...leads.map((lead) => lead.waitListNumber));
+      const updates = leads.map((lead, index) => ({
+        id: lead.id,
+        waitListNumber: min + index,
+      }));
+
+      await Promise.all(
+        updates.map((update) =>
+          tx.lead.update({
+            where: { id: update.id },
+            data: { waitListNumber: update.waitListNumber },
+          }),
+        ),
+      );
     });
+  }
+
+  async updateWaitListNumberRange(
+    id: string,
+    waitListNumber: number,
+    range: number,
+  ) {
+    const neighbors = await this.prisma.lead.findMany({
+      where: {
+        OR: [
+          {
+            id: {
+              equals: id,
+            },
+          },
+          {
+            status: {
+              equals: 'WAITLIST',
+            },
+            waitListNumber: {
+              lte: waitListNumber + range,
+            },
+          },
+        ],
+      },
+      orderBy: [{ invitesUsed: 'desc' }, { createdAt: 'asc' }],
+      take: range,
+    });
+
+    const min = Math.min(...neighbors.map((lead) => lead.waitListNumber));
+    const updates = neighbors.map((lead, index) => ({
+      id: lead.id,
+      name: lead.name,
+      invites: lead.invitesUsed,
+      createdAt: lead.createdAt,
+      waitListNumber: min + index,
+    }));
+
+    await this.prisma.$transaction(
+      updates.map((update) =>
+        this.prisma.lead.update({
+          where: { id: update.id },
+          data: { waitListNumber: update.waitListNumber },
+        }),
+      ),
+    );
   }
 }
