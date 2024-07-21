@@ -26,4 +26,21 @@ export class WhatsAppService {
       .then(async (data) => console.log(await data.text()))
       .catch((error) => console.error(error));
   }
+
+  @Logger()
+  async sendTimeoutMessage(phoneNumber: string) {
+    const url = assembleUrl(
+      `https://f0hvd5xnvj.execute-api.us-east-1.amazonaws.com/dev/`,
+      `event/sendTimeoutMessage/${phoneNumber}`,
+    );
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (data) => console.log(await data.text()))
+      .catch((error) => console.error(error));
+  }
 }

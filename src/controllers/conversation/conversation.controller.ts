@@ -28,6 +28,11 @@ export class ConversationController {
     return this.service.conversationOpened(id);
   }
 
+  @Get('opened')
+  async allConversationsOpened() {
+    return this.service.allConversationsOpened();
+  }
+
   @Post()
   async createConversation(@Body() data: any) {
     return this.service.createConversation(data);

@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { Logger } from 'src/crosscuting/decorators/logger';
 import { UserRepository } from 'src/domains/repositories/user.repository';
 
 @Injectable()

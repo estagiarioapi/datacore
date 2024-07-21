@@ -25,6 +25,10 @@ export class ConversationService {
     });
   }
 
+  async allConversationsOpened() {
+    return this.repository.conversations({});
+  }
+
   async createConversation(data: any) {
     return this.repository.createConversation(data);
   }
