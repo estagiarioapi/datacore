@@ -71,32 +71,35 @@ export class ConversationService {
       }
     };
 
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
     return new Promise((resolve, reject) => {
       let attempts = 0;
 
       const checkResponse = async () => {
-        try {
-          const data = await resposta(thread);
-          if (data === false) {
-            if (attempts < 10) {
+        while (attempts < 10) {
+          try {
+            const data = await resposta(thread);
+            if (data === false) {
               attempts++;
               console.log(
                 `Tentativa ${attempts}: Resposta ainda não disponível, tentando novamente...`,
               );
-              setTimeout(checkResponse, 5000);
+              await delay(5000); // Espera 5 segundos antes de tentar novamente
             } else {
-              reject(
-                new Error(
-                  'Número máximo de tentativas atingido sem resposta válida.',
-                ),
-              );
+              resolve(data);
+              return;
             }
-          } else {
-            resolve(data);
+          } catch (error) {
+            reject(error);
+            return;
           }
-        } catch (error) {
-          reject(error);
         }
+        reject(
+          new Error(
+            'Número máximo de tentativas atingido sem resposta válida.',
+          ),
+        );
       };
 
       checkResponse();
