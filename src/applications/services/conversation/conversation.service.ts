@@ -49,8 +49,8 @@ export class ConversationService {
     return this.repository.deleteConversation({ id });
   }
 
-  async getMessageFromOpenAIApi(thread: string) {
-    const resposta = async (thread: string) => {
+  async getMessageFromOpenAIApi(thread) {
+    const resposta = async (thread) => {
       const payload = {
         thread: thread,
         tokens: 300,
@@ -72,14 +72,22 @@ export class ConversationService {
     };
 
     return new Promise((resolve, reject) => {
-      setTimeout(async () => {
+      const checkResponse = async () => {
         try {
           const data = await resposta(thread);
-          resolve(data);
+          console.log('data:', data);
+          if (data === false) {
+            console.log('Resposta ainda não disponível, tentando novamente...');
+            setTimeout(checkResponse, 5000);
+          } else {
+            resolve(data);
+          }
         } catch (error) {
           reject(error);
         }
-      }, 20000);
+      };
+
+      checkResponse();
     });
   }
 }
