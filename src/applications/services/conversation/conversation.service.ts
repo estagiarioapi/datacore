@@ -72,7 +72,7 @@ export class ConversationService {
           console.log(
             `Attempt ${attempts + 1}: Response not available, retrying...`,
           );
-          if (attempts < 2) {
+          if (attempts < 5) {
             await delay(5000);
           }
         }
