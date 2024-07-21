@@ -11,9 +11,13 @@ export class WhatsAppService {
     : 'http://localhost:3001/';
 
   @Logger()
-  async sendMessageTemplate(phoneNumber: string, modelName: MessageTemplate) {
+  async sendMessageTemplate(
+    phoneNumber: string,
+    modelName: MessageTemplate,
+    parameters?: any,
+  ) {
     const url = assembleUrl(this.apiUrl, 'event/sendMessageTemplate');
-    const body = JSON.stringify({ phoneNumber, modelName });
+    const body = JSON.stringify({ phoneNumber, modelName, parameters });
     console.log(url, body);
 
     fetch(url, {

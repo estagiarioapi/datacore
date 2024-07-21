@@ -62,7 +62,7 @@ export class LeadService {
   }
 
   async isPhoneAuthorized(phone: string) {
-    return await this.leadRepository.findByPhone(phone);
+    return await this.leadRepository.findByPhone(standardizeBRPhone(phone));
   }
 
   async get2HoursEndingsPromotion() {
@@ -81,16 +81,9 @@ export class LeadService {
   }
 
   async shiftWaitList(positions: number) {
-    const leads = await this.leadRepository.shiftWaitList(positions);
-
-    this.eventEmitter.emit('lead.accepted', leads);
+    this.eventEmitter.emit('lead.accepted', positions);
     this.eventEmitter.emit('lead.syncWailist', positions);
-
-    return leads.map((lead) => ({
-      phone: lead.phone,
-      name: lead.name,
-      invited: lead.invitesUsed,
-    }));
+    return { message: 'Lista de espera em processamento!', positions };
   }
 
   private getRoleDescription(role: Role, roleDescription: string) {
@@ -101,5 +94,25 @@ export class LeadService {
     } else {
       return roleDescription;
     }
+  }
+
+  async update() {
+    return await this.leadRepository.updateLead({
+      where: { id: '2b124d8b-d27d-43de-b84c-588abaa6ef5e' },
+      data: { phone: '554398482484' },
+    });
+  }
+
+  async updateWaitListNumber() {
+    return await this.leadRepository.updateWaitListNumber();
+  }
+
+  async updateWaitListNumberId(id: string) {
+    const lead = await this.leadRepository.lead({ id });
+    return await this.leadRepository.updateWaitListNumberRange(
+      lead.id,
+      lead.waitListNumber,
+      10,
+    );
   }
 }

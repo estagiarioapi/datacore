@@ -4,4 +4,6 @@ export class UpdatedLead {
   readonly email: string;
   readonly phone: string;
   readonly invites: number;
+  readonly createdAt: Date;
+  readonly waitListNumber: number;
 }
