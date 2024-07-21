@@ -72,13 +72,25 @@ export class ConversationService {
     };
 
     return new Promise((resolve, reject) => {
+      let attempts = 0;
+
       const checkResponse = async () => {
         try {
           const data = await resposta(thread);
-          console.log('data:', data);
           if (data === false) {
-            console.log('Resposta ainda não disponível, tentando novamente...');
-            setTimeout(checkResponse, 5000);
+            if (attempts < 5) {
+              attempts++;
+              console.log(
+                `Tentativa ${attempts}: Resposta ainda não disponível, tentando novamente...`,
+              );
+              setTimeout(checkResponse, 5000);
+            } else {
+              reject(
+                new Error(
+                  'Número máximo de tentativas atingido sem resposta válida.',
+                ),
+              );
+            }
           } else {
             resolve(data);
           }
