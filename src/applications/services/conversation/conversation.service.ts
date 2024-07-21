@@ -85,7 +85,7 @@ export class ConversationService {
               console.log(
                 `Tentativa ${attempts}: Resposta ainda não disponível, tentando novamente...`,
               );
-              await delay(5000); // Espera 5 segundos antes de tentar novamente
+              await delay(10000)
             } else {
               resolve(data);
               return;
