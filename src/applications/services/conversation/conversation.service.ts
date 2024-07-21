@@ -78,7 +78,7 @@ export class ConversationService {
         try {
           const data = await resposta(thread);
           if (data === false) {
-            if (attempts < 5) {
+            if (attempts < 10) {
               attempts++;
               console.log(
                 `Tentativa ${attempts}: Resposta ainda não disponível, tentando novamente...`,
