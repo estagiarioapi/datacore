@@ -49,8 +49,8 @@ export class ConversationService {
     return this.repository.deleteConversation({ id });
   }
 
-  async getMessageFromOpenAIApi(thread) {
-    const resposta = async (thread) => {
+  async getMessageFromOpenAIApi(thread: string) {
+    const resposta = async (thread: string) => {
       const payload = {
         thread: thread,
         tokens: 300,
@@ -71,38 +71,15 @@ export class ConversationService {
       }
     };
 
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
     return new Promise((resolve, reject) => {
-      let attempts = 0;
-
-      const checkResponse = async () => {
-        while (attempts < 10) {
-          try {
-            const data = await resposta(thread);
-            if (data === false) {
-              attempts++;
-              console.log(
-                `Tentativa ${attempts}: Resposta ainda não disponível, tentando novamente...`,
-              );
-              await delay(10000)
-            } else {
-              resolve(data);
-              return;
-            }
-          } catch (error) {
-            reject(error);
-            return;
-          }
+      setTimeout(async () => {
+        try {
+          const data = await resposta(thread);
+          resolve(data);
+        } catch (error) {
+          reject(error);
         }
-        reject(
-          new Error(
-            'Número máximo de tentativas atingido sem resposta válida.',
-          ),
-        );
-      };
-
-      checkResponse();
+      }, 10000);
     });
   }
 }
