@@ -25,6 +25,10 @@ export class ConversationService {
     });
   }
 
+  async allConversationsOpened() {
+    return this.repository.conversations({});
+  }
+
   async createConversation(data: any) {
     return this.repository.createConversation(data);
   }
@@ -49,41 +53,37 @@ export class ConversationService {
     return this.repository.deleteConversation({ id });
   }
 
-  async getMessageFromOpenAIApi(thread) {
-    const payload = {
-      thread: thread,
-      tokens: 300,
-    };
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-    const url =
-      'https://eytqilito555ozskhjp2p76auy0wfhtb.lambda-url.us-east-2.on.aws/';
+  async getMessageFromOpenAIApi(thread: string) {
+    const resposta = async (thread: string) => {
+      const payload = {
+        thread: thread,
+        tokens: 300,
+      };
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      const url =
+        'https://eytqilito555ozskhjp2p76auy0wfhtb.lambda-url.us-east-2.on.aws/';
 
-    // Função para adicionar atraso
-    const delay = async (ms) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
-
-    for (let attempts = 0; attempts < 3; attempts++) {
       try {
-        // Adiciona um atraso de 10 segundos antes de cada tentativa
-        await delay(10000);
-
         const response = await axios.post(url, payload, { headers });
-        if (response.data !== false) {
-          return response.data;
-        } else {
-          console.log(
-            `Attempt ${attempts + 1}: Response not available, retrying...`,
-          );
-        }
+        console.log(response.data);
+        return response.data;
       } catch (error) {
         console.error(error);
         throw error;
       }
-    }
-    throw new Error(
-      'Maximum number of attempts reached without a valid response.',
-    );
+    };
+
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          const data = await resposta(thread);
+          resolve(data);
+        } catch (error) {
+          reject(error);
+        }
+      }, 12000);
+    });
   }
 }
