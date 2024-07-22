@@ -60,21 +60,22 @@ export class ConversationService {
     const url =
       'https://eytqilito555ozskhjp2p76auy0wfhtb.lambda-url.us-east-2.on.aws/';
 
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    // Função para adicionar atraso
+    const delay = async (ms) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
 
     for (let attempts = 0; attempts < 3; attempts++) {
       try {
+        // Adiciona um atraso de 10 segundos antes de cada tentativa
+        await delay(10000);
+
         const response = await axios.post(url, payload, { headers });
-        console.log(response.data);
         if (response.data !== false) {
           return response.data;
         } else {
           console.log(
             `Attempt ${attempts + 1}: Response not available, retrying...`,
           );
-          if (attempts < 5) {
-            await delay(5000);
-          }
         }
       } catch (error) {
         console.error(error);
