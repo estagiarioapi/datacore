@@ -83,7 +83,7 @@ export class ConversationService {
         } catch (error) {
           reject(error);
         }
-      }, 12000);
+      }, 20000);
     });
   }
 }
