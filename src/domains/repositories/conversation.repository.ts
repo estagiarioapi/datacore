@@ -38,6 +38,21 @@ export class ConversationRepository {
     });
   }
 
+  async allConversations(id: string) {
+    return await this.prisma.conversation.findMany({
+      where: {
+        userId: id,
+      },
+      include: {
+        conversationMessages: {
+          include: {
+            message: true,
+          },
+        },
+      },
+    });
+  }
+
   async createConversation(
     data: Prisma.ConversationCreateInput,
   ): Promise<Conversation> {

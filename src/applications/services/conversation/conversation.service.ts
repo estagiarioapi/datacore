@@ -33,6 +33,10 @@ export class ConversationService {
     });
   }
 
+  async allConversationsMessagesFromUser(id: string) {
+    return await this.repository.allConversations(id);
+  }
+
   async allConversationsOpened() {
     return this.repository.conversations({});
   }
