@@ -69,36 +69,80 @@ enum LeadStatus {
 }
 
 model Lead {
-  id          String    @id @default(dbgenerated("gen_random_uuid()"))
-  name        String
-  email       String    @unique
-  phone       String    @unique
-  inviteCode  String    @unique
-  role        Role
-  status      LeadStatus
-  waitListNumber    Int 
-  descriptionRole   String
-  invitesUsed       Int @default(0)
-  acceptInvite     Boolean @default(false)
+  id              String     @id @default(dbgenerated("gen_random_uuid()"))
+  name            String
+  email           String     @unique
+  phone           String     @unique
+  inviteCode      String     @unique
+  role            Role
+  status          LeadStatus
+  waitListNumber  Int
+  descriptionRole String
+  invitesUsed     Int        @default(0)
+  acceptInvite    Boolean    @default(false)
 
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
-  invites     LeadInvite[] @relation("LeadInviteDestiny")
-  invitedBy   LeadInvite[] @relation("LeadInviteOrigin")
+  invites   LeadInvite[] @relation("LeadInviteDestiny")
+  invitedBy LeadInvite[] @relation("LeadInviteOrigin")
 }
 
 model LeadInvite {
-  id            String    @id @default(dbgenerated("gen_random_uuid()"))
-  originLeadId  String   
+  id            String       @id @default(dbgenerated("gen_random_uuid()"))
+  originLeadId  String
   destinyLeadId String
   inviteCode    String
   inviteStatus  InviteStatus
-  updatedAt   DateTime? @updatedAt
-  createdAt   DateTime @default(now())
+  updatedAt     DateTime?    @updatedAt
+  createdAt     DateTime     @default(now())
 
-  originLead   Lead @relation("LeadInviteOrigin", fields: [originLeadId], references: [id])
-  destinyLead  Lead @relation("LeadInviteDestiny", fields: [destinyLeadId], references: [id])
+  originLead  Lead @relation("LeadInviteOrigin", fields: [originLeadId], references: [id])
+  destinyLead Lead @relation("LeadInviteDestiny", fields: [destinyLeadId], references: [id])
 
   @@unique([originLeadId, destinyLeadId])
+}
+
+model Menu {
+  id             String          @id @default(dbgenerated("gen_random_uuid()"))
+  name           String
+  type           MenuType
+  parentId       Int?
+  contratoType   ContractType?
+  pecaType       PecaType?
+  pecaTypeOption PecaTypeOption?
+}
+
+enum MenuType {
+  CONTRATOS
+  PECAS
+  DOCUMENTOS
+  INSTRUMENTOS
+  AUXILIAR
+  OUTRO
+}
+
+enum ContractType {
+  AGRARIO
+  CIVIL
+  CULTURAL
+  EMPRESARIAL
+  IMOBILIARIO
+}
+
+enum PecaType {
+  ADMINISTRATIVO
+  CIVIL
+  CONSTITUCIONAL
+  EMPRESARIAL
+  PENAL
+  PREVIDENCIARIO
+  TRABALHO
+  TRIBUTARIO
+}
+
+enum PecaTypeOption {
+  INICIAL
+  INTERMEDIARIA
+  RECURSO
 }
