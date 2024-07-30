@@ -104,7 +104,7 @@ model LeadInvite {
 }
 
 model Menu {
-  id             String          @id @default(dbgenerated("gen_random_uuid()"))
+  id             Int             @id @default(autoincrement())
   name           String
   type           MenuType
   parentId       Int?
