@@ -25,6 +25,18 @@ export class ConversationService {
     });
   }
 
+  async userConversationOpened(id: string) {
+    return this.repository.conversations({
+      where: {
+        userId: id,
+      },
+    });
+  }
+
+  async allConversationsMessagesFromUser(id: string) {
+    return await this.repository.allConversations(id);
+  }
+
   async allConversationsOpened() {
     return this.repository.conversations({});
   }
