@@ -102,3 +102,47 @@ model LeadInvite {
 
   @@unique([originLeadId, destinyLeadId])
 }
+
+model Menu {
+  id             Int             @id @default(autoincrement())
+  name           String
+  type           MenuType
+  parentId       Int?
+  contratoType   ContractType?
+  pecaType       PecaType?
+  pecaTypeOption PecaTypeOption?
+}
+
+enum MenuType {
+  CONTRATOS
+  PECAS
+  DOCUMENTOS
+  INSTRUMENTOS
+  AUXILIAR
+  OUTRO
+}
+
+enum ContractType {
+  AGRARIO
+  CIVIL
+  CULTURAL
+  EMPRESARIAL
+  IMOBILIARIO
+}
+
+enum PecaType {
+  ADMINISTRATIVO
+  CIVIL
+  CONSTITUCIONAL
+  EMPRESARIAL
+  PENAL
+  PREVIDENCIARIO
+  TRABALHO
+  TRIBUTARIO
+}
+
+enum PecaTypeOption {
+  INICIAL
+  INTERMEDIARIA
+  RECURSO
+}
